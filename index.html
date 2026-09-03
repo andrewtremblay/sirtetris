@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>sirtetris</title>
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+<main class="wrap">
+  <header>
+    <h1>sirtetris</h1>
+    <p class="tag">a symmetric stacking puzzle &mdash; pieces alternate rising from the floor and sliding in from the sides</p>
+  </header>
+
+  <div class="game">
+    <div class="board-col">
+      <canvas id="board" width="480" height="480" aria-label="playfield"></canvas>
+      <div id="overlay" class="overlay hidden">
+        <div class="overlay-inner">
+          <p id="overlay-title">paused</p>
+          <p id="overlay-sub" class="small">press P to resume</p>
+        </div>
+      </div>
+    </div>
+
+    <aside class="side">
+      <div class="panel">
+        <span class="label">mode</span>
+        <div id="mode" class="mode">&mdash;</div>
+      </div>
+      <div class="panel">
+        <span class="label">next</span>
+        <canvas id="next" width="120" height="120"></canvas>
+      </div>
+      <div class="panel">
+        <span class="label">hold</span>
+        <canvas id="hold" width="120" height="120"></canvas>
+      </div>
+      <div class="panel stats">
+        <div><span class="label">score</span><span id="score">0</span></div>
+        <div><span class="label">lines</span><span id="lines">0</span></div>
+        <div><span class="label">level</span><span id="level">1</span></div>
+      </div>
+    </aside>
+  </div>
+
+  <section class="help">
+    <h2>controls</h2>
+    <ul>
+      <li><b>&larr; &rarr; / &uarr; &darr;</b> move the piece across the direction of travel</li>
+      <li><b>arrow toward the wall</b> soft drop &nbsp;&middot;&nbsp; <b>space</b> hard drop</li>
+      <li><b>Z / X</b> rotate &nbsp;&middot;&nbsp; <b>C</b> hold &nbsp;&middot;&nbsp; <b>P</b> pause &nbsp;&middot;&nbsp; <b>R</b> restart</li>
+    </ul>
+    <p class="small">In <b>vertical mode</b> pieces rise from the floor to the ceiling and full rows clear.
+       In <b>horizontal mode</b> pieces slide in from the right or the left and full columns clear.
+       The two modes alternate.</p>
+  </section>
+</main>
+<script src="game.js"></script>
+</body>
+</html>

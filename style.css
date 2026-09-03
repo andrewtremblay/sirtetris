@@ -1,0 +1,127 @@
+:root {
+  --bg: #14161c;
+  --panel: #1e222b;
+  --ink: #e7e9ee;
+  --muted: #8b93a4;
+  --line: #2c313d;
+  --accent: #6fb7c9;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  padding: 24px 16px 48px;
+  background: var(--bg);
+  color: var(--ink);
+  font: 15px/1.5 "Segoe UI", Roboto, system-ui, sans-serif;
+  display: flex;
+  justify-content: center;
+}
+
+.wrap { width: 100%; max-width: 720px; }
+
+header h1 {
+  margin: 0;
+  font-size: 34px;
+  letter-spacing: 2px;
+  font-weight: 700;
+}
+
+.tag { margin: 4px 0 20px; color: var(--muted); }
+
+.game {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+
+.board-col { position: relative; }
+
+#board {
+  background: #0e1014;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  display: block;
+  max-width: 100%;
+  height: auto;
+  touch-action: none;
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(10, 12, 16, 0.82);
+  border-radius: 6px;
+}
+
+.overlay.hidden { display: none; }
+
+.overlay-inner { text-align: center; }
+.overlay-inner p { margin: 4px 0; font-size: 24px; letter-spacing: 1px; }
+
+.side {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 160px;
+}
+
+.panel {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 10px 12px;
+}
+
+.label {
+  display: block;
+  text-transform: uppercase;
+  font-size: 11px;
+  letter-spacing: 1.5px;
+  color: var(--muted);
+  margin-bottom: 6px;
+}
+
+.mode {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--accent);
+}
+
+#next, #hold {
+  display: block;
+  width: 120px;
+  height: 120px;
+  background: #0e1014;
+  border-radius: 4px;
+}
+
+.stats div {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin: 2px 0;
+}
+.stats span:last-child { font-size: 18px; font-weight: 600; }
+.stats .label { margin-bottom: 0; }
+
+.help { margin-top: 28px; color: var(--muted); }
+.help h2 {
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--muted);
+}
+.help ul { padding-left: 18px; margin: 8px 0; }
+.help b { color: var(--ink); }
+.small { font-size: 13px; }
+
+@media (max-width: 560px) {
+  .side { flex-direction: row; flex-wrap: wrap; width: 480px; max-width: 100%; }
+  .panel { flex: 1 1 45%; }
+}
