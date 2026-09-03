@@ -1,0 +1,41 @@
+name: Deploy to andrew-tremblay.com
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy
+  cancel-in-progress: true
+
+env:
+  SSH_PORT: 22
+  REMOTE_PATH: /home/gloriousrocketship/andrew-tremblay.com/public/games/sirtetris
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Stage site files
+        run: |
+          mkdir -p dist
+          cp index.html style.css game.js dist/
+
+      - name: Install sshpass
+        run: sudo apt-get update && sudo apt-get install -y sshpass
+
+      - name: Trust host key
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan -p "$SSH_PORT" "${{ secrets.SSH_HOST }}" >> ~/.ssh/known_hosts
+
+      - name: Sync build to server
+        env:
+          SSHPASS: ${{ secrets.SSH_PASSWORD }}
+        run: |
+          sshpass -e rsync -avz --delete \
+            -e "ssh -p $SSH_PORT" \
+            dist/ "${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}:$REMOTE_PATH/"

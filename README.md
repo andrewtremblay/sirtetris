@@ -4,10 +4,13 @@
 
 A symmetric stacking puzzle. Pieces don't only fall — they **alternate**:
 
-- **Vertical mode** — the piece rises from the floor to the ceiling. Full
-  **rows** clear.
+- **Vertical mode** — the piece rises from the floor to the ceiling.
 - **Horizontal mode** — the piece slides in from the right or the left
-  (the side alternates each time). Full **columns** clear.
+  (the side alternates each time).
+
+Every time a piece locks, **any full row and any full column clears**. The
+gap left by a cleared row collapses toward the ceiling; the gap left by a
+cleared column collapses toward the wall the piece came from.
 
 The two modes take turns, so the playfield is a square and every rule has a
 mirror image. A hole you leave in one mode becomes a wall you fight in the
@@ -38,8 +41,17 @@ soft-drops and `↑ ↓` strafe.
 
 ## Scoring
 
-Lines cleared at once: 100 / 300 / 500 / 800, times the current level.
-Level rises every 10 lines and the pieces move faster.
+Clearing `n` lines (rows + columns) at once scores `50 · n · (n + 1)` times
+the current level, so combined clears are worth chasing. Level rises every
+10 lines and the pieces move faster.
+
+## Deployment
+
+Pushing to `main` triggers `.github/workflows/deploy.yml`, which stages the
+three static files and `rsync`s them to
+`www.andrew-tremblay.com/games/sirtetris/` over SSH. It needs three repo
+secrets — `SSH_HOST`, `SSH_USERNAME`, `SSH_PASSWORD` — the same ones the
+sibling `puzzle-arcade` deploy uses.
 
 ## Originality / licensing
 
