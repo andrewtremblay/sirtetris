@@ -1,5 +1,7 @@
 # sirtetris
 
+![sirtetris](preview.png)
+
 A symmetric stacking puzzle. Pieces don't only fall — they **alternate**:
 
 - **Vertical mode** — the piece rises from the floor to the ceiling. Full
