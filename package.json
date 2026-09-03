@@ -1,0 +1,14 @@
+{
+  "name": "sirtetris",
+  "private": true,
+  "version": "1.0.0",
+  "description": "A symmetric alternating-gravity stacking puzzle",
+  "scripts": {
+    "start": "python3 -m http.server 4173",
+    "test": "playwright test",
+    "test:headed": "playwright test --headed"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.62.1"
+  }
+}

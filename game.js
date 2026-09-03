@@ -486,6 +486,7 @@
     updateStats();
     hideOverlay();
     drawHold();
+    syncPauseBtn();
     if (!running) {
       running = true;
       lastT = performance.now();
@@ -495,7 +496,8 @@
 
   function endGame() {
     over = true;
-    showOverlay("game over", "press R to play again");
+    showOverlay("game over", "press R / tap here to play again");
+    syncPauseBtn();
   }
 
   function showOverlay(title, sub) {
@@ -508,11 +510,12 @@
   function togglePause() {
     if (over) return;
     paused = !paused;
-    if (paused) showOverlay("paused", "press P to resume");
+    if (paused) showOverlay("paused", "press P / tap here to resume");
     else {
       hideOverlay();
       lastT = performance.now();
     }
+    syncPauseBtn();
   }
 
   // ---- input ------------------------------------------------------
@@ -567,7 +570,73 @@
   });
   window.addEventListener("blur", stopRepeat);
 
-  // Read-only introspection, handy for tinkering from the console.
+  // ---- touch input --------------------------------------------------
+  // The on-screen pad maps straight onto the arrow keys, so handleDirKey's
+  // per-mode logic (strafe vs. soft drop) is reused unchanged.
+  const TOUCH_KEY = {
+    up: "ArrowUp",
+    down: "ArrowDown",
+    left: "ArrowLeft",
+    right: "ArrowRight",
+  };
+
+  function doAction(act) {
+    if (act === "pause") {
+      if (over) reset();
+      else togglePause();
+      return;
+    }
+    if (over || paused) return;
+    if (act === "rotate") return tryRotate(true);
+    if (act === "drop") return hardDrop();
+    if (act === "hold") return doHold();
+    if (TOUCH_KEY[act]) handleDirKey(TOUCH_KEY[act]);
+  }
+
+  const touchPad = document.getElementById("touch");
+  if (touchPad) {
+    for (const btn of touchPad.querySelectorAll("button[data-act]")) {
+      const act = btn.dataset.act;
+      btn.addEventListener("pointerdown", (e) => {
+        e.preventDefault();
+        btn.setPointerCapture?.(e.pointerId);
+        doAction(act);
+        syncPauseBtn();
+        if (TOUCH_KEY[act]) startRepeat(TOUCH_KEY[act]);
+      });
+      const release = () => stopRepeat();
+      btn.addEventListener("pointerup", release);
+      btn.addEventListener("pointercancel", release);
+      btn.addEventListener("pointerleave", release);
+      btn.addEventListener("contextmenu", (e) => e.preventDefault());
+    }
+  }
+
+  // Tap (not drag) on the board rotates.
+  let tapStart = null;
+  board.addEventListener("pointerdown", (e) => {
+    tapStart = { x: e.clientX, y: e.clientY, t: Date.now() };
+  });
+  board.addEventListener("pointerup", (e) => {
+    if (!tapStart) return;
+    const moved = Math.hypot(e.clientX - tapStart.x, e.clientY - tapStart.y);
+    const quick = Date.now() - tapStart.t < 400;
+    tapStart = null;
+    if (moved < 12 && quick && !over && !paused) tryRotate(true);
+  });
+
+  els.overlay.addEventListener("pointerdown", (e) => {
+    e.preventDefault();
+    if (over) reset();
+    else if (paused) togglePause();
+  });
+
+  const pauseBtn = document.getElementById("pauseBtn");
+  function syncPauseBtn() {
+    if (pauseBtn) pauseBtn.textContent = over ? "restart" : paused ? "resume" : "pause";
+  }
+
+  // ---- read-only introspection (console tinkering + tests) ----------
   window.sirtetris = {
     get grid() {
       return grid.map((r) => r.slice());
@@ -576,9 +645,51 @@
       return piece && { ...piece, cells: cells(piece) };
     },
     get state() {
-      return { score, lines, level, over, paused, mode: piece && piece.dir.name };
+      return {
+        score,
+        lines,
+        level,
+        over,
+        paused,
+        mode: piece && piece.dir.name,
+        next: nextType,
+        hold: holdType,
+      };
     },
   };
+
+  // Test-only seam (opt in with ?test in the URL) for deterministic setups.
+  if (/[?&]test\b/.test(location.search)) {
+    window.__sirtetrisTest = {
+      // rows: array of strings; "." is empty, any other char fills the cell
+      // (a tetromino letter picks that colour, anything else falls back to I).
+      setGrid(rows) {
+        grid = makeGrid();
+        rows.forEach((row, y) => {
+          if (y >= ROWS) return;
+          for (let x = 0; x < Math.min(row.length, COLS); x++) {
+            const c = row[x];
+            if (c !== "." && c !== " ")
+              grid[y][x] = SHAPES[c] ? c : "I";
+          }
+        });
+      },
+      setPiece(type, x, y, dirKey) {
+        piece = {
+          type,
+          matrix: SHAPES[type].map((r) => r.slice()),
+          x,
+          y,
+          dir: DIR[dirKey],
+        };
+      },
+      lock: () => lockPiece(),
+      spawn: () => newPiece(),
+      hardDrop: () => hardDrop(),
+      step: () => step(),
+      clear: (axis) => clearLines(axis),
+    };
+  }
 
   reset();
 })();

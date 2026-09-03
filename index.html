@@ -2,7 +2,8 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="theme-color" content="#14161c" />
 <title>sirtetris</title>
 <link rel="stylesheet" href="style.css" />
 </head>
@@ -25,15 +26,15 @@
     </div>
 
     <aside class="side">
-      <div class="panel">
+      <div class="panel mode-panel">
         <span class="label">mode</span>
         <div id="mode" class="mode">&mdash;</div>
       </div>
-      <div class="panel">
+      <div class="panel next-panel">
         <span class="label">next</span>
         <canvas id="next" width="120" height="120"></canvas>
       </div>
-      <div class="panel">
+      <div class="panel hold-panel">
         <span class="label">hold</span>
         <canvas id="hold" width="120" height="120"></canvas>
       </div>
@@ -45,12 +46,28 @@
     </aside>
   </div>
 
+  <div id="touch" class="touch" aria-hidden="true">
+    <div class="pad">
+      <button type="button" class="tb tb-up" data-act="up" aria-label="move up">&#9650;</button>
+      <button type="button" class="tb tb-left" data-act="left" aria-label="move left">&#9664;</button>
+      <button type="button" class="tb tb-rot" data-act="rotate" aria-label="rotate">&#8635;</button>
+      <button type="button" class="tb tb-right" data-act="right" aria-label="move right">&#9654;</button>
+      <button type="button" class="tb tb-down" data-act="down" aria-label="move down">&#9660;</button>
+    </div>
+    <div class="pad2">
+      <button type="button" class="tb wide" data-act="hold">hold</button>
+      <button type="button" class="tb wide" data-act="drop">drop</button>
+      <button type="button" class="tb wide" data-act="pause" id="pauseBtn">pause</button>
+    </div>
+  </div>
+
   <section class="help">
     <h2>controls</h2>
     <ul>
       <li><b>&larr; &rarr; / &uarr; &darr;</b> move the piece across the direction of travel</li>
       <li><b>arrow toward the wall</b> soft drop &nbsp;&middot;&nbsp; <b>space</b> hard drop</li>
       <li><b>Z / X</b> rotate &nbsp;&middot;&nbsp; <b>C</b> hold &nbsp;&middot;&nbsp; <b>P</b> pause &nbsp;&middot;&nbsp; <b>R</b> restart</li>
+      <li class="touch-only">on a touch screen, use the pad above &middot; tap the board to rotate</li>
     </ul>
     <p class="small">In <b>vertical mode</b> pieces rise from the floor to the ceiling and full rows clear.
        In <b>horizontal mode</b> pieces slide in from the right or the left and full columns clear.

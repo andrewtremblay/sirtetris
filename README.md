@@ -39,6 +39,23 @@ In vertical mode the wall is the ceiling, so `↑` soft-drops and `← →`
 strafe. In horizontal mode the wall is a side, so that side's arrow
 soft-drops and `↑ ↓` strafe.
 
+On a phone the layout collapses to a single column with an on-screen
+D-pad (rotate in the centre) plus **hold / drop / pause**. Tapping the
+board also rotates.
+
+## Testing
+
+```
+npm install
+npx playwright install chromium   # first run only
+npm test
+```
+
+Playwright drives the real page in two projects — `desktop` (keyboard)
+and `mobile` (Pixel 7, touch). Tests read the `window.sirtetris`
+introspection hook, and use the `?test` seam (`window.__sirtetrisTest`)
+to set up deterministic boards for the line-clear and game-over cases.
+
 ## Scoring
 
 Clearing `n` lines (rows + columns) at once scores `50 · n · (n + 1)` times
